@@ -341,12 +341,12 @@ class PyMacroParser(object):
                     i += 1
                 words = wordSlice(''.join(listTemp))
                 
-                if len(words) < 2:      # #defin and #
+                if len(words) < 1:
                     continue
 
                 if words[0] == 'define':
                     if len(words) != 3:
-                        raise ValueError('something wrong in wordSlice() with input: %s' % ''.join(listTemp))
+                        continue
                     if bExecute:
                         self.dic[words[1]] = getValue(words[2])
 
@@ -354,13 +354,13 @@ class PyMacroParser(object):
                     outterState.append(bExecute)
                     r = words[1] in self.dic
                     preBranch.append(r)
-                    bExecute = r and outterState[-1]
+                    bExecute = r and bExecute
                                             
                 elif words[0] == 'ifndef':
                     outterState.append(bExecute)                    
                     r = words[1] not in self.dic
                     preBranch.append(r)
-                    bExecute = r and outterState[-1]
+                    bExecute = r and bExecute
                     
                 elif words[0] == 'else':
                     bExecute = outterState[-1] and (not preBranch[-1])
@@ -400,8 +400,8 @@ class PyMacroParser(object):
 t_py = PyMacroParser()
 t_py.load('C:\\Users\\10405\\source\\repos\\1\\testInput.cpp')
 t_py.preDefine('MC1;MC2')
+
+
 t_py.dumpDict()
-print(t_py.dic)
-#t_py.dumpDict()
-#t_py.dump('C:\\Users\\10405\\source\\repos\\1\\testOutput.cpp')
+t_py.dump('C:\\Users\\10405\\source\\repos\\1\\testOutput.cpp')
 
